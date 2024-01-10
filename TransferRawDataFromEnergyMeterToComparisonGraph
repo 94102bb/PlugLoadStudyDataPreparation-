@@ -1,0 +1,806 @@
+# load dataset
+# 1st floor work station No.4
+df1WS04 = pd.read_excel(r"C:\.xlsx", sheet_name="1WS04")
+# 1st floor work station No.28
+df1WS28 = pd.read_excel(r"C:\.xlsx", sheet_name="1WS28")
+# 2nd floor work station No.22
+df2WS22 = pd.read_excel(r"C:\.xlsx", sheet_name="2WS22")
+# 2nd floor work station No.32
+df2WS32 = pd.read_excel(r"C:\.xlsx", sheet_name="2WS32")
+# 2nd floor work station No.50
+df2WS50 = pd.read_excel(r"C:\.xlsx", sheet_name="2WS50")
+# 2nd floor work station No.1
+df2WS01 = pd.read_excel(r"C:\.xlsx", sheet_name="2WS01")
+# 1st floor Printer Space No.1
+df1PS01 = pd.read_excel(r"C:\.xlsx", sheet_name="1PS01")
+# 2nd floor Printer Space No.5
+df2PS05 = pd.read_excel(r"C:\.xlsx", sheet_name="2PS05")
+# 1st floor Kitchen Space
+df1KN = pd.read_excel(r"C:\.x
+lsx", sheet_name="1KN")
+# 2nd floor Mail Room
+df2ML = pd.read_excel(r"C:\.x
+lsx", sheet_name="2ML")
+# 1st floor Board Room
+df1BR = pd.read_excel(r"C:\.x
+lsx", sheet_name="1BR")
+# Sever Room
+dfServerRooms = pd.read_excel(r"C:\.xlsx", sheet_name="ServerRooms")
+# Panel data sum-up
+dfDentData = pd.read_excel(r"C:\.xlsx", sheet_name="DentData")
+# PG&E data
+dfPGE = pd.read_excel(r"C:\.x
+lsx", sheet_name="PGE")
+
+#Preview loaded data
+df1WS04.head(3)
+
+# Exploratory Analysis
+# Tag the week day or weekend
+import calendar
+# Find out what day of the week
+df1WS04["DAYOFWEEK"]=df1WS04["DateTime"].dt.dayofweek
+df1WS04["NAMEOFDAY"]=df1WS04["DateTime"].dt.day_name()
+print(df1WS04.head())
+
+#Preview
+pd.DataFrame(df1WS04)
+print(df1WS04.head())
+
+# Find out what day of the week for the other sheets
+df1WS04["DAYOFWEEK"]=df1WS04["DateTime"].dt.dayofweek
+df1WS04["NAMEOFDAY"]=df1WS04["DateTime"].dt.day_name()
+df2WS22["DAYOFWEEK"]=df2WS22["DateTime"].dt.dayofweek
+df2WS22["NAMEOFDAY"]=df2WS22["DateTime"].dt.day_name()
+df2WS32["DAYOFWEEK"]=df2WS32["DateTime"].dt.dayofweek
+df2WS32["NAMEOFDAY"]=df2WS32["DateTime"].dt.day_name()
+df2WS50["DAYOFWEEK"]=df2WS50["DateTime"].dt.dayofweek
+df2WS50["NAMEOFDAY"]=df2WS50["DateTime"].dt.day_name()
+df2WS01["DAYOFWEEK"]=df2WS01["DateTime"].dt.dayofweek
+df2WS01["NAMEOFDAY"]=df2WS01["DateTime"].dt.day_name()
+df1PS01["DAYOFWEEK"]=df1PS01["DateTime"].dt.dayofweek
+df1PS01["NAMEOFDAY"]=df1PS01["DateTime"].dt.day_name()
+df2PS05["DAYOFWEEK"]=df2PS05["DateTime"].dt.dayofweek
+df2PS05["NAMEOFDAY"]=df2PS05["DateTime"].dt.day_name()
+df1KN["DAYOFWEEK"]=df1KN["DateTime"].dt.dayofweek
+df1KN["NAMEOFDAY"]=df1KN["DateTime"].dt.day_name()
+df2ML["DAYOFWEEK"]=df2ML["DateTime"].dt.dayofweek
+df2ML["NAMEOFDAY"]=df2ML["DateTime"].dt.day_name()
+df1BR["DAYOFWEEK"]=df1BR["DateTime"].dt.dayofweek
+df1BR["NAMEOFDAY"]=df1BR["DateTime"].dt.day_name()
+dfDentData["DAYOFWEEK"]=dfDentData["DateTime"].dt.dayofweek
+dfDentData["NAMEOFDAY"]=dfDentData["DateTime"].dt.day_name()
+dfPGE["DAYOFWEEK"]=dfPGE["StartDateTime"].dt.dayofweek
+dfPGE["NAMEOFDAY"]=dfPGE["StartDateTime"].dt.day_name()
+
+# Data manipulation for workstation: 1WS04
+# UPS stands for uninterruptible power supply devices
+df1WS04["MonitorsComputer_W"]=df1WS04["ActivePower_W_Monitor"]+df1WS04["Active
+Power_W_Computer"]
+df1WS04["MonitorsComputer_Wh"]=df1WS04["ActiveEnergy_Wh_Monitor"]+df1WS04["Act
+iveEnergy_Wh_Computer"]
+df1WS04["UPS_Diff_W"]=df1WS04["ActivePower_W_UPS"]-df1WS04["MonitorsComputer_
+W"]
+df1WS04["UPS_Diff_Wh"]=df1WS04["ActiveEnergy_Wh_UPS"]-df1WS04["MonitorsCompute
+r_Wh"]
+
+# Create plot for one typical work station: 1WS04
+fig, (ax1,ax2) = plt.subplots(2,1, figsize=(20,7), sharex=True)
+  ax1.plot(df1WS04.DateTime, df1WS04.MonitorsComputer_W, 'r', df1WS04.DateTime,
+df1WS04.ActivePower_W_UPS, 'k')
+  ax2.plot(df1WS04.DateTime, df1WS04.MonitorsComputer_Wh, 'r', df1WS04.DateTime,
+df1WS04.ActiveEnergy_Wh_UPS, 'k')
+  ax1.set_ylabel('ActivePower_W',size=20)
+  ax1.tick_params(direction='in', length=3, width=2,labelsize=20)
+  ax2.legend(['2MonitorsComputer', 'UPS'], prop={'size': 20} , loc='lower cente
+r', ncol=5,bbox_to_anchor=(0.5,-0.6))
+  ax2.set_xlabel('Time',size=20)
+  ax2.set_ylabel('ActiveEnergy_Wh',size=20)
+  ax2.tick_params(direction='in', length=3, width=2,labelsize=20)
+  ax1.set_title('Active Energy/Power Usage for Workstation Using Computers',size
+=20)
+
+ # Data manipulation for workstation: 1WS28
+df1WS28["MonitorsComputer_W"]=df1WS28["ActivePower_W_Monitor"]+df1WS28["Active
+Power_W_Laptop"]
+df1WS28["MonitorsComputer_Wh"]=df1WS28["ActiveEnergy_Wh_Monitor"]+df1WS28["Act
+iveEnergy_Wh_Laptop"]
+df1WS28["UPS_Diff_W"]=df1WS28["ActivePower_W_UPS"]-df1WS28["MonitorsComputer_
+W"]
+df1WS28["UPS_Diff_Wh"]=df1WS28["ActiveEnergy_Wh_UPS"]-df1WS28["MonitorsCompute
+r_Wh"]
+
+# Create plot for one typical work station: 1WS28
+fig, (ax1,ax2) = plt.subplots(2,1, figsize=(20,7), sharex=True)
+  ax1.plot(df1WS28.DateTime, df1WS28.MonitorsComputer_W, 'r', df1WS28.DateTime,
+  df1WS28.ActivePower_W_UPS, 'k')
+  ax2.plot(df1WS28.DateTime, df1WS28.MonitorsComputer_Wh, 'r', df1WS28.DateTime,
+  df1WS28.ActiveEnergy_Wh_UPS, 'k')
+  ax1.set_ylabel('ActivePower_W',size=20)
+  ax1.tick_params(direction='in', length=3, width=2,labelsize=20)
+  ax2.legend(['2MonitorsLaptop', 'UPS'], prop={'size': 20} , loc='lower center',
+  ncol=5,bbox_to_anchor=(0.5,-0.6))
+  ax2.set_xlabel('Time',size=20)
+  ax2.set_ylabel('ActiveEnergy_Wh',size=20)
+  ax2.tick_params(direction='in', length=3, width=2,labelsize=20)
+  ax1.set_title('Active Energy/Power Usage for Workstation Using Laptop ',size=2
+  0)
+
+# Create plot for one typical work station: 1WS28
+fig, (ax1,ax2) = plt.subplots(2,1, figsize=(20,7), sharex=True)
+  ax1.plot(df1WS28.DateTime, df1WS28.MonitorsComputer_W, 'r', df1WS28.DateTime,
+  df1WS28.ActivePower_W_UPS, 'k')
+  ax2.plot(df1WS28.DateTime, df1WS28.MonitorsComputer_Wh, 'r', df1WS28.DateTime,
+  df1WS28.ActiveEnergy_Wh_UPS, 'k')
+  ax1.set_ylabel('ActivePower_W',size=20)
+  ax1.tick_params(direction='in', length=3, width=2,labelsize=20)
+  ax2.legend(['2MonitorsLaptop', 'UPS'], prop={'size': 20} , loc='lower center',
+  ncol=5,bbox_to_anchor=(0.5,-0.6))
+  ax2.set_xlabel('Time',size=20)
+  ax2.set_ylabel('ActiveEnergy_Wh',size=20)
+  ax2.tick_params(direction='in', length=3, width=2,labelsize=20)
+  ax1.set_title('Active Energy/Power Usage for Workstation Using Laptop ',size=2
+  0)
+
+# Average percentage of difference
+df1WS04["Diff_Percentage"]=df1WS04["UPS_Diff_W"]/df1WS04["ActivePower_W_UPS"]
+print(df1WS04["Diff_Percentage"].mean())
+
+df1WS04.max()
+
+df1WS04.min()
+
+ # Summary for work station: The figure above shows how energy was consumed wit
+hin one typical weekday.
+# The minimum energy usage was reached during the lunch break, while maximum w
+as reached in the morning
+# The uninterruptible power supply devices rated 80% more energy than the 2 mo
+nitors and computers,
+# which indicates there are some potential benefits for plug load usage reduct
+ion 
+
+# For computer on
+df1WS04.loc[df1WS04.ActivePower_W_Computer >= 5].mean()
+
+# For computer off
+df1WS04.loc[df1WS04.ActivePower_W_Computer < 5].mean()
+
+# Based on the comparison between energy consumption for computer_on situation
+and off situation. We can tell from the data that the plug load for work station is mainly for
+computers and the UPS consumed more energy than that is actually used for desktop have the bac
+kup battery system.
+
+# for weekend
+df1WS04.loc[df1WS04.DAYOFWEEK >= 5].mean()
+
+# for weekday
+df1WS04.loc[df1WS04.DAYOFWEEK < 5].mean()
+
+# the workstation04's active enegy for weekend is 0.15Wh, while for weekday is
+0.6789 Wh, which means weekday is 3.5 times heigher than weekend. And the work station 22,28, 32 are similar with work station 04
+
+# Create plot for all work stations
+fig, (ax1) = plt.subplots(1,1, figsize=(20,7))
+ax1.plot( df1WS04.DateTime, df1WS04.ActiveEnergy_Wh_UPS, 'k',
+   df1WS28.DateTime, df1WS28.ActiveEnergy_Wh_UPS, 'r',
+   df2WS22.DateTime, df2WS22.ActiveEnergy_Wh_UPS, 'y',
+   df2WS32.DateTime, df2WS32.ActiveEnergy_Wh_UPS, 'b',
+   df2WS50.DateTime, df2WS50.ActiveEnergy_Wh_UPS, 'g',
+   df2WS01.DateTime, df2WS01.ActiveEnergy_Wh_UPS, 'p')
+
+ax1.legend(['1WS04', '1WS28',"2WS22","2WS32","2WS50","2WS01"], prop={'size': 2
+0} , loc='lower center', ncol=6,bbox_to_anchor=(0.5,-0.4))
+
+ax1.set_xlabel('Time',size=20)
+ax1.set_ylabel('ActiveEnergy_Wh',size=20)
+ax1.tick_params(direction='in', length=3, width=2,labelsize=20)
+ax1.set_title('Active Energy Usage/ Wh for Workstation ',size=20)
+
+# As we can see, the energy consumption pattern for all the work stations are
+pretty similar with a maximum value for 1WS04, and a minimum for 1WS28 which is all laptop
+plugloads suggesting reducing workstation use overall by switching to laptops and elim
+inating the back-up power devices
+Another way to reduce the energy consumption is to utilize “smart” plug stri
+ps at workstations to control and monitor employee plug load use by occupancy
+
+# Create plot for Printer Room
+fig, (ax1,ax2) = plt.subplots(2,1, figsize=(20,7))
+ax1.plot( df1PS01.DateTime, df1PS01.ActivePower_W_ClaimsScanner, 'k',
+   df1PS01.DateTime, df1PS01["ActivePower_W_ClaimsPrinter"], 'r',
+   df1PS01.DateTime, df1PS01["ActivePower_W_FaxMachine"], 'b')
+ax2.plot(df1PS01.DateTime, df1PS01.ActivePower_W_ClaimsScanner, 'k',
+   df1PS01.DateTime, df1PS01["ActiveEnergy_Wh_Claims Printer"], 'r',
+   df1PS01.DateTime, df1PS01["ActiveEnergy_Wh_Fax Machine"], 'b'
+ )
+
+ax2.legend(['Scanner', 'Printer',"Fax Machine"], prop={'size': 20} , loc='lowe
+r center', ncol=6,bbox_to_anchor=(0.5,-0.6))
+ax2.set_xlabel('Time',size=20)
+ax1.set_ylabel('Active Energy/Wh',size=20)
+ax1.tick_params(direction='in', length=7, width=4,labelsize=20)
+ax1.set_title('Power/Energy Usage for Printer Space 1PS01 ',size=20)
+ax2.set_ylabel('Active Energy/Wh ',size=20)
+ax2.tick_params(direction='in', length=7, width=4,labelsize=20)
+
+# We can tell from the graph the scanner consumed the major part of energy in the printer room. 
+
+# Create plot for Kitchen
+fig, (ax1) = plt.subplots(1,1, figsize=(20,7))
+ax1.plot( df1KN.DateTime, df1KN.ActiveEnergy_Wh_Microwave, 'k',
+         df1KN.DateTime, df1KN["ActiveEnergy_Wh_Water Cooler"], 'r',
+          df1KN.DateTime, df1KN["ActiveEnergy_Wh_Refrigerator"],"g")
+
+ax1.legend(['Microwave',"Water Cooler","Refrigerator"], prop={'size': 20} , lo
+c='lower center', ncol=6,bbox_to_anchor=(0.5,-0.4))
+ax1.set_xlabel('Time',size=20)
+ax1.set_ylabel('ActiveEnergy_Wh',size=20)
+ax1.tick_params(direction='in', length=7, width=4,labelsize=20)
+ax1.set_title('Active Energy Usage/ Wh for Kitchen ',size=20)
+
+# The active energy usage of dishwasher is nearly zero.
+# The refrigerator power consumption is remain constant during both the weekda
+ys and weekends
+# The microwave has the peak load during the lunch break 
+
+# Create plot for Mail room
+fig, (ax1) = plt.subplots(1,1, figsize=(20,7))
+  ax1.plot( df2ML.DateTime, df2ML["ActiveEnergy_Wh_Mail Machine"], 'k')
+
+  ax1.set_xlabel('Time',size=20)
+  ax1.set_ylabel('ActiveEnergy_Wh',size=20)
+  ax1.tick_params(direction='in', length=3, width=2,labelsize=20)
+  ax1.set_title('Active Energy Usage/ Wh for Mail Room Mail Machine',size=20)
+
+# Create plot for Boardroom
+fig, (ax1) = plt.subplots(1,1, figsize=(20,7))
+ax1.plot(
+   df1BR.DateTime, df1BR["ActiveEnergy_Wh_BoardroomProjector"], 'r',
+   df1BR.DateTime, df1BR["ActiveEnergy_Wh_ Teleconference"], 'b')
+
+ax1.legend([ 'Boardroom Projector',"Teleconference"], prop={'size': 20} , loc=
+'lower center', ncol=6,bbox_to_anchor=(0.5,-0.3))
+ax1.set_xlabel('Time',size=20)
+ax1.set_ylabel('ActiveEnergy_Wh',size=20)
+ax1.tick_params(direction='in', length=3, width=2,labelsize=20)
+ax1.set_title('Active Energy Usage/ Wh for Boardroom ',size=20)
+
+# Summary for the mail room and board room: the mail room plug load is dominated by mail machine, which is following the typical weekday pattern, while the board room's equipmentn tel
+econference machine is hard to find a pattern due to the different meeting time duing weekdays
+For othe office equipment, in order to effectively eliminate this building’s
+primary contributors to off-hours energy use, an automated strategy included within the electrical d
+esign may be employed.
+# The strategy involves the electrical design engineers coordinating all outle
+ts that will serve printers to be served by a common electrical panel. Then a control device, which is t
+ied into the building security system, will be connected to this branch panel. The control device will then
+turn OFF the power supply to this electrical panel whenever the security system is enabled, indicating th
+at the building is un-occupied and in the “off-hours” timeframe.
+# In addition to implementing panel controls, consolidating printer equipment
+will save energy use.
+# Eliminating personal printers and using only 6 group printers (2 per floo
+r), 3 scanners (1 per floor),
+# and 1 fax machine for the office with off-hours plug load control may reduce
+this equipment energy use 
+
+# for the office facilities/plug load,
+# 1WS04: computer
+# 1WS28: laptop
+# 2WS22: computer
+# 2WS32: computer
+# 2WS50: computer
+# 2WS01: printer
+# 1PS01: Scanner, Printers, Fax machines
+# 2PS05: Printer
+# 1KN: Microwave, Dishwasher, Water Cooler, Refrigerator
+# 2ML: Mail Machine, Coffee Machine
+# 1BR: Training Ctr Router, Boardroom Projector, Teleconference, 
+
+# Create plot for average temperature, energy usage from PGE utility bill, sum
+of Panels power consumption
+fig, (ax1,ax2,ax3) = plt.subplots(3,1, figsize=(20,10),sharex=True)
+    ax1.plot(dfPGE.StartDateTime, dfPGE.AvgTemperature_degF, 'k')
+    ax2.plot(dfPGE.StartDateTime, dfPGE.Usage_kWh, 'r')
+    ax3.plot(dfPGE.StartDateTime, dfPGE.SUM_OF_PANELS, 'b')
+    ax3.set_xlabel('Time',size=20)
+    ax1.set_ylabel('AvgTemperature_degF',size=20)
+    ax1.tick_params(direction='in', length=3, width=2,labelsize=20)
+    ax2.set_ylabel('Usage_kWh',size=20)
+    ax2.tick_params(direction='in', length=3, width=2,labelsize=20)
+    ax3.set_ylabel('SUM_OF_PANELS',size=20)
+    ax3.tick_params(direction='in', length=3, width=2,labelsize=20)
+
+# To find the relationship between average outdoor temperature and Usage 
+dfweekend=dfPGE.loc[dfPGE.DAYOFWEEK >= 5]
+dfweekday=dfPGE.loc[dfPGE.DAYOFWEEK < 5]
+
+# To simplify the model based on observation that the total plug load/Sum of P
+anel for weekday and weekend are different, we split the dataset to two catego
+ry: weekday and weekend 
+dfweekday["Time"]=dfweekday["StartDateTime"].dt.time
+dfweekend["Time"]=dfweekend["StartDateTime"].dt.time
+dfweekday.head()
+
+ # Create plot for a typical day energy usage
+fig = plt.figure(figsize=(12,6))
+    ax1 = fig.add_subplot()
+    ax1.scatter(dfweekday.Time.values, dfweekday.Usage_kWh, facecolor='None', edge
+    color='k', alpha=1, label='Weekday')
+    ax1.hlines(0,xmin=ax1.xaxis.get_data_interval()[0],
+     xmax=ax1.xaxis.get_data_interval()[1], linestyles='dotted')
+    ax1.scatter(dfweekend.Time.values, dfweekend.Usage_kWh, facecolor='None', edge
+    color='r', alpha=1, label='Weekend')
+    ax1.set_ylabel('EnergyUsage_kWh',size=20)
+    ax1.tick_params(direction='in', length=3, width=2,labelsize=20)
+    plt.legend(loc='lower right', fontsize=20);
+    ax1.set_xlabel('Time',size=20)
+
+plt.show()
+
+# For weekday, we split the data set
+# Set seed for reproducibility
+SEED = 1
+# Choose one variable as lable to split
+y = dfweekday.Usage_kWh
+X = dfweekday.drop("Usage_kWh",axis=1)
+# Split data into 70% train and 30% test
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.3
+ ,random_state=SEED)
+# Merge dataframe for train and test data
+Train=pd.concat([X_train,y_train],axis=1, sort=False)
+Train_weekday=pd.DataFrame(Train)
+Test=pd.concat([X_test, y_test],axis=1, sort=False)
+Test_weekday=pd.DataFrame(Test)
+# For multiple linear regression
+est = smf.ols('Usage_kWh ~ AvgTemperature_degF', Train_weekday).fit()
+est.summary().tables[1]
+
+# Based on what preliminary analysis, the weekday and temperature is highly co
+rrelated with energy usage with low P-value 
+
+# Try Mulitple Linear Regression
+est4 = smf.ols('Usage_kWh ~ Time + DAYOFWEEK + AvgTemperature_degF', Train_wee
+kday).fit()
+est4.summary().tables[1]
+
+X_test["pred1"]=est4.predict(X_test)
+print (X_test.head)
+
+X_test["resid1"]=y_test-X_test.pred1
+print(X_test.head())
+
+#Plot for residual
+plt.scatter(X_test.pred1, X_test.resid1,facecolors='None', edgecolors='r', alp
+ha=.5)
+
+# The residual value is randomly distributed in the plot which suggest it does
+not have heteroscedasticity 
+
+# We can use KNN method when we obtain more data for a longer period of meteri
+ng later which can definitely help develop the energy consumption model for futher measurement and verification
+projects.
+# For plug load management, as we can see the difference plug load type have d
+ifferent energy usage pattern
+# And some of them is can be managed by utilizing controllable plugs with smar
+t plug strips
+# In order to manage employee workstation plug loads, it usually makes more se
+nse to control outlets locally rather than at the electrical panel; as it could be counterp
+roductive to automatically cut power to an employee’s workstation who might be staying la
+te or logging into the computer remotely.To best control an employee’s workstation plug lo
+ads, a “smart” plug strip can be employed, which allows for monitoring and control of devic
+es plugged into the strip
+
+# The future study will be collecting more data for a longer duration to find
+the relationship between weather temperature and energy consumption with change point. Those study can have s
+ome building design implications, such as solar panel photovaltaic/PV array size reduction, battery storage si
+zing, electrical distribution design for net zero energy projects 
+
+# SUM data
+dfSUM = pd.read_excel(r"C:\\raw_data.xlsx", sheet_name="Sum")
+dfSUM.head()
+
+# Create plot total and breakdown
+fig = plt.figure(figsize=(15,5))
+      ax1 = fig.add_subplot()
+      ax1.scatter(dfSUM.Time.values, dfSUM.Weekday_AllPlugLoad, facecolor='None', ed
+      gecolor='k', alpha=1, label='Weekday')
+      ax1
+      ax1.scatter(dfSUM.Time.values, dfSUM.WeekendHoliday_AllPlugLoad, facecolor='No
+      ne', edgecolor='r', alpha=1, label='Weekend/Holiday')
+      ax1.scatter(dfSUM.Time.values, dfSUM.Weekday_Server, facecolor='None', edgecol
+      or='b', alpha=1, label='Servers')
+      ax1.set_ylabel('Active Power/kW',size=20)
+      ax1.tick_params(direction='in', length=3, width=2,labelsize=20)
+      plt.legend(loc='lower right', fontsize=20);
+      ax1.set_xlabel('Time',size=20)
+      ax1.set_title('Typical Day Plug Load Demand Profiles ',size=20)
+      ax1.set_ylim(0,)
+      ax1.set_xlim(0,89800)
+plt.show()
+
+max(dfSUM.Weekday_AllPlugLoad)
+
+
+# Create plot total and breakdown
+fig = plt.figure(figsize=(15,5))
+      ax1 = fig.add_subplot()
+      ax1.scatter(dfSUM.Time.values, dfSUM.weekdayfaction, facecolor='None', edgecol
+      or='k', alpha=1, label='Weekday')
+      ax1
+      ax1.scatter(dfSUM.Time.values, dfSUM.weekendfaction, facecolor='None', edgecol
+      or='r', alpha=1, label='Weekend/Holiday')
+      ax1.scatter(dfSUM.Time.values, dfSUM.Serverfaction, facecolor='None', edgecolo
+      r='b', alpha=1, label='Servers')
+      ax1.set_ylabel('Active Power Fraction',size=20)
+      ax1.tick_params(direction='in', length=3, width=2,labelsize=20)
+      plt.legend(loc='lower right', fontsize=20);
+      ax1.set_xlabel('Time',size=20)
+      ax1.set_title('Typical Day Plug Load Demand Profiles by Fraction ',size=20)
+      ax1.set_ylim(0,)
+      ax1.set_xlim(0,89800)
+
+plt.show()
+
+dfSUM.weekdayfactiontime=dfSUM.Weekday_AllPlugLoad/dfSUM.Weekday_AllPlugLoad
+dfSUM.weekendfactiontime=dfSUM.WeekendHoliday_AllPlugLoad/dfSUM.Weekday_AllPlu
+gLoad
+dfSUM.Serverfactiontime=dfSUM.Weekday_Server/dfSUM.Weekday_AllPlugLoad
+
+# Create plot total and breakdown
+fig = plt.figure(figsize=(15,5))
+    ax1 = fig.add_subplot()
+    ax1.scatter(dfSUM.Time.values, dfSUM.weekdayfactiontime, facecolor='None', edg
+    ecolor='k', alpha=1, label='Weekday')
+    ax1
+    ax1.scatter(dfSUM.Time.values, dfSUM.weekendfactiontime, facecolor='None', edg
+    ecolor='r', alpha=1, label='Weekend/Holiday')
+    ax1.scatter(dfSUM.Time.values, dfSUM.Serverfactiontime, facecolor='None', edge
+    color='b', alpha=1, label='Servers')
+    ax1.set_ylabel('Active Power Fraction',size=20)
+    ax1.tick_params(direction='in', length=3, width=2,labelsize=20)
+    plt.legend(loc='lower right', fontsize=20);
+    ax1.set_xlabel('Time',size=20)
+    ax1.set_title('Typical Day Plug Load Demand Profiles by Fraction ',size=20)
+    ax1.set_ylim(0,)
+    ax1.set_xlim(0,89800)
+
+plt.show()
+
+# DAILY PROFILE
+dfdaily = pd.read_excel(r"C:\\raw_data.xlsx", sheet_name="daily")
+dfdaily["serversWeekdaywh"]=dfdaily["serversWeekday"]*1000
+dfdaily["serversWeekendHolidaywh"]=dfdaily["serversWeekendHoliday"]*1000
+
+import matplotlib.dates as mdates
+# Create plot for energy usage categorized by equipment types
+fig, (ax1, ax2) = plt.subplots(2,1, figsize=(20,10))
+ax1.plot( dfdaily.Time, dfdaily["desktopWeekday"], 'C1',
+           dfdaily.Time, dfdaily["laptopWeekday"], 'C2',
+           dfdaily.Time, dfdaily["personalprintersWeekday"],"C3",
+           dfdaily.Time, dfdaily["groupprintersWeekday"],"C4",
+           dfdaily.Time, dfdaily["scannersWeekday"],"C5",
+           dfdaily.Time, dfdaily["faxmachinesWeekday"],"C6",
+           dfdaily.Time, dfdaily["mailmachineWeekday"],"C7",
+           dfdaily.Time, dfdaily["coffeemachineWeekday"],"C8",
+           dfdaily.Time, dfdaily["microwaveWeekday"],"C9",
+           dfdaily.Time, dfdaily["dishwasherWeekday"],"C10",
+           dfdaily.Time, dfdaily["watercoolerWeekday"],"b",
+           dfdaily.Time, dfdaily["refrigeratorsWeekday"],"g",
+           dfdaily.Time, dfdaily["wirelessrouterWeekday"],"y",
+           dfdaily.Time, dfdaily["projectorWeekday"],"c",
+           dfdaily.Time, dfdaily["teleconferenceWeekday"],"m",
+           dfdaily.Time, dfdaily["serversWeekdaywh"],"k")
+          ax2.plot( dfdaily.Time, dfdaily["desktopWeekendHoliday"], 'C1',
+           dfdaily.Time, dfdaily["laptopWeekendHoliday"], 'C2',
+           dfdaily.Time, dfdaily["personalprintersWeekendHoliday"],"C3",
+           dfdaily.Time, dfdaily["groupprintersWeekendHoliday"],"C4",
+           dfdaily.Time, dfdaily["scannersWeekendHoliday"],"C5",
+           dfdaily.Time, dfdaily["faxmachinesWeekendHoliday"],"C6",
+           dfdaily.Time, dfdaily["mailmachineWeekendHoliday"],"C7",
+           dfdaily.Time, dfdaily["coffeemachineWeekendHoliday"],"C8",
+           dfdaily.Time, dfdaily["microwaveWeekendHoliday"],"C9",
+           dfdaily.Time, dfdaily["dishwasherWeekendHoliday"],"C10",
+           dfdaily.Time, dfdaily["watercoolerWeekendHoliday"],"b",
+           dfdaily.Time, dfdaily["refrigeratorsWeekendHoliday"],"g",
+           dfdaily.Time, dfdaily["wirelessrouterWeekendHoliday"],"y",
+           dfdaily.Time, dfdaily["projectorWeekendHoliday"],"c",
+           dfdaily.Time, dfdaily["teleconferenceWeekendHoliday"],"m",
+           dfdaily.Time, dfdaily["serversWeekendHolidaywh"],"k")
+ax2.legend(["Desktop",
+           "Laptop",
+           "Personal Printer",
+           "Group Printer",
+           "Scanner",
+           "Fax Machine",
+           "Mail Machine",
+           "Coffee Machine",
+           "Microwave",
+           "Dish Washer",
+           "Water Cooler",
+           "Refrigerator",
+           "Wirelessrouter",
+           "Projector",
+           "Teleconference",
+           "Servers"], prop={'size': 20} , loc='lower center', ncol=6,bbox
+          _to_anchor=(0.5,-0.7))
+ax2.set_xlabel('Time',size=20)
+ax1.set_title('Active Energy Usage/ Wh by Equipment Types ',size=20)
+ax1.set_ylabel('Weekday',size=20)
+ax2.set_ylabel('Weekend/Holiday',size=20)
+
+for ax in fig.axes:
+   ax.set_xlim(xmin=0)
+   ax.tick_params(direction='in', length=7, width=4,labelsize=20)
+   ax.set_xticks(['00:00', '02:00' , '04:00',
+   '06:00', '08:00', '10:00',
+   '12:00', '14:00', '16:00',
+   '18:00', '20:00', '22:00', '24:00' ])
+   ax.set_xlim(xmin="00:00")
+   ax.set_xlim(xmax="24:00")
+
+# Create plot for energy usage categorized by equipment types without servers
+fig, (ax1, ax2) = plt.subplots(2,1, figsize=(20,10))
+ax1.plot( dfdaily.Time, dfdaily["desktopWeekday"], 'C1',
+ dfdaily.Time, dfdaily["laptopWeekday"], 'C2',
+ dfdaily.Time, dfdaily["personalprintersWeekday"],"C3",
+ dfdaily.Time, dfdaily["groupprintersWeekday"],"C4",
+ dfdaily.Time, dfdaily["scannersWeekday"],"C5",
+ dfdaily.Time, dfdaily["faxmachinesWeekday"],"C6",
+ dfdaily.Time, dfdaily["mailmachineWeekday"],"C7",
+ dfdaily.Time, dfdaily["coffeemachineWeekday"],"C8",
+ dfdaily.Time, dfdaily["microwaveWeekday"],"C9",
+ dfdaily.Time, dfdaily["dishwasherWeekday"],"C10",
+ dfdaily.Time, dfdaily["watercoolerWeekday"],"b",
+ dfdaily.Time, dfdaily["refrigeratorsWeekday"],"g",
+ dfdaily.Time, dfdaily["wirelessrouterWeekday"],"y",
+ dfdaily.Time, dfdaily["projectorWeekday"],"c",
+ dfdaily.Time, dfdaily["teleconferenceWeekday"],"m")
+ax2.plot( dfdaily.Time, dfdaily["desktopWeekendHoliday"], 'C1',
+ dfdaily.Time, dfdaily["laptopWeekendHoliday"], 'C2',
+ dfdaily.Time, dfdaily["personalprintersWeekendHoliday"],"C3",
+ dfdaily.Time, dfdaily["groupprintersWeekendHoliday"],"C4",
+ dfdaily.Time, dfdaily["scannersWeekendHoliday"],"C5",
+ dfdaily.Time, dfdaily["faxmachinesWeekendHoliday"],"C6",
+ dfdaily.Time, dfdaily["mailmachineWeekendHoliday"],"C7",
+ dfdaily.Time, dfdaily["coffeemachineWeekendHoliday"],"C8",
+ dfdaily.Time, dfdaily["microwaveWeekendHoliday"],"C9",
+ dfdaily.Time, dfdaily["dishwasherWeekendHoliday"],"C10",
+ dfdaily.Time, dfdaily["watercoolerWeekendHoliday"],"b",
+ dfdaily.Time, dfdaily["refrigeratorsWeekendHoliday"],"g",
+ dfdaily.Time, dfdaily["wirelessrouterWeekendHoliday"],"y",
+ dfdaily.Time, dfdaily["projectorWeekendHoliday"],"c",
+ dfdaily.Time, dfdaily["teleconferenceWeekendHoliday"],"m")
+ax2.legend(["Desktop",
+ "Laptop",
+ "Personal Printer",
+ "Group Printer",
+ "Scanner",
+ "Fax Machine",
+ "Mail Machine",
+ "Coffee Machine",
+ "Microwave",
+ "Dish Washer",
+ "Water Cooler",
+ "Refrigerator",
+ "Wirelessrouter",
+ "Projector",
+ "Teleconference"], prop={'size': 20} , loc='lower center', ncol
+=6,bbox_to_anchor=(0.5,-0.7))
+ax2.set_xlabel('Time',size=20)
+ax1.set_title('Active Energy Usage/ Wh by Equipment Types (Servers not Include
+d)',size=20)
+
+ax1.set_ylabel('Weekday',size=20)
+ax2.set_ylabel('Weekend/Holiday',size=20)
+
+for ax in fig.axes:
+   ax.set_xlim(xmin=0)
+   ax.tick_params(direction='in', length=7, width=4,labelsize=20)
+   ax.set_xticks(['00:00', '02:00' , '04:00',
+   '06:00', '08:00', '10:00',
+   '12:00', '14:00', '16:00',
+   '18:00', '20:00', '22:00', '24:00' ])
+   ax.set_xlim(xmin="00:00")
+   ax.set_xlim(xmax="24:00")
+
+ # Create plot for energy usage categorized by equipment types without servers
+fig, (ax1, ax2) = plt.subplots(2,1, figsize=(20,10))
+ax1.plot(
+ dfdaily.Time, dfdaily["laptopWeekday"], 'C2',
+ dfdaily.Time, dfdaily["personalprintersWeekday"],"C3",
+ dfdaily.Time, dfdaily["groupprintersWeekday"],"C4",
+ dfdaily.Time, dfdaily["scannersWeekday"],"C5",
+ dfdaily.Time, dfdaily["faxmachinesWeekday"],"C6",
+ dfdaily.Time, dfdaily["mailmachineWeekday"],"C7",
+ dfdaily.Time, dfdaily["coffeemachineWeekday"],"C8",
+ dfdaily.Time, dfdaily["microwaveWeekday"],"C9",
+ dfdaily.Time, dfdaily["dishwasherWeekday"],"C10",
+ dfdaily.Time, dfdaily["watercoolerWeekday"],"b",
+ dfdaily.Time, dfdaily["refrigeratorsWeekday"],"g",
+ dfdaily.Time, dfdaily["wirelessrouterWeekday"],"y",
+ dfdaily.Time, dfdaily["projectorWeekday"],"c",
+ dfdaily.Time, dfdaily["teleconferenceWeekday"],"m")
+ax2.plot(
+ dfdaily.Time, dfdaily["laptopWeekendHoliday"], 'C2',
+ dfdaily.Time, dfdaily["personalprintersWeekendHoliday"],"C3",
+ dfdaily.Time, dfdaily["groupprintersWeekendHoliday"],"C4",
+ dfdaily.Time, dfdaily["scannersWeekendHoliday"],"C5",
+ dfdaily.Time, dfdaily["faxmachinesWeekendHoliday"],"C6",
+ dfdaily.Time, dfdaily["mailmachineWeekendHoliday"],"C7",
+ dfdaily.Time, dfdaily["coffeemachineWeekendHoliday"],"C8",
+ dfdaily.Time, dfdaily["microwaveWeekendHoliday"],"C9",
+ dfdaily.Time, dfdaily["dishwasherWeekendHoliday"],"C10",
+ dfdaily.Time, dfdaily["watercoolerWeekendHoliday"],"b",
+ dfdaily.Time, dfdaily["refrigeratorsWeekendHoliday"],"g",
+ dfdaily.Time, dfdaily["wirelessrouterWeekendHoliday"],"y",
+ dfdaily.Time, dfdaily["projectorWeekendHoliday"],"c",
+ dfdaily.Time, dfdaily["teleconferenceWeekendHoliday"],"m")
+ax2.legend(["Desktop",
+ "Laptop",
+ "Personal Printer",
+ "Group Printer",
+ "Scanner",
+ "Fax Machine",
+ "Mail Machine",
+ "Coffee Machine",
+ "Microwave",
+ "Dish Washer",
+ "Water Cooler",
+ "Refrigerator",
+ "Wirelessrouter",
+ "Projector",
+ "Teleconference"], prop={'size': 20} , loc='lower center', ncol
+=6,bbox_to_anchor=(0.5,-0.7))
+ax2.set_xlabel('Time',size=20)
+ax1.set_title('Active Energy Usage/ Wh by Equipment Types (Servers&Desktop not
+Included)',size=20)
+
+ax1.set_ylabel('Weekday',size=20)
+ax2.set_ylabel('Weekend/Holiday',size=20)
+
+for ax in fig.axes:
+ ax.set_xlim(xmin=0)
+ ax.tick_params(direction='in', length=7, width=4,labelsize=20)
+ ax.set_xticks(['00:00', '02:00' , '04:00',
+ '06:00', '08:00', '10:00',
+ '12:00', '14:00', '16:00',
+ '18:00', '20:00', '22:00', '24:00' ])
+ ax.set_xlim(xmin="00:00")
+ ax.set_xlim(xmax="24:00")
+
+dfdaily.drop('Time', axis=1).sum()
+dfdailysum = pd.dataframe = dfdaily.drop('Time', axis=1).sum()
+dfdailysum["serversWeekday"] = dfdailysum["serversWeekday"] * 1000
+dfdailysum["serversWeekendHoliday"] = dfdailysum["serversWeekendHoliday"] * 10
+00
+
+print (dfdailysum)
+
+dfdailysum_weekday = pd.dataframe = dfdailysum.drop(["desktopWeekendHoliday"
+                                                 , "laptopWeekendHoliday"
+                                                 , "personalprintersWeekendHoli
+                                                day"
+                                                 , "groupprintersWeekendHolida
+                                                y"
+                                                 , "scannersWeekendHoliday"
+                                                 , "faxmachinesWeekendHolid
+                                                ay"
+                                                 , "mailmachineWeekendHoliday"
+                                                , "coffeemachineWeekendHolida
+                                                y"
+                                                 , "microwaveWeekendHoliday"
+                                                ,"dishwasherWeekendHoliday"
+                                                 , "watercoolerWeekendHoliday"
+                                                 , "refrigeratorsWeekendHolida
+                                                y"
+                                                 , "wirelessrouterWeekendHolida
+                                                y"
+                                                 , "projectorWeekendHoliday"
+                                                , "teleconferenceWeekendHolida
+                                                y"
+                                                 , "serversWeekendHoliday"
+                                                , "sum"
+                                                , "percentage"])
+print(dfdailysum_weekday )
+
+dfdailysum_weekday.index = ["desktop"
+                           , "laptopy"
+                           , "personal printers"
+                          , "group printers"
+                          , "scanners"
+                           , "fax machines"
+                           , "mail machine"
+                          , "coffee machine"
+                          , "microwave"
+                          ,"dishwasher"
+                           , "water cooler"
+                           , "refrigerators"
+                          , "wireless router"
+                          , "projector"
+                          , "teleconference"
+                          , "servers"]
+dfdailysum_weekday
+
+dfdailysum_weekday = dfdailysum_weekday / 1000
+dfdailysum_weekday
+
+dfdailysum_weekday.plot(kind='barh', color='r')
+plt.xlabel('Weekday Energy Usage Daily Profile (kWh)')
+plt.gca().legend_ = None
+
+dfdailysum_weekendHoliday = pd.dataframe = dfdailysum[["desktopWeekendHoliday"
+                                                     , "laptopWeekendHoliday"
+                                                     , "personalprintersWeekendHoli
+                                                    day"
+                                                     , "groupprintersWeekendHolida
+                                                    y"
+                                                     , "scannersWeekendHoliday"
+                                                     , "faxmachinesWeekendHolid
+                                                    ay"
+                                                     , "mailmachineWeekendHoliday"
+                                                    , "coffeemachineWeekendHolida
+                                                    y"
+                                                     , "microwaveWeekendHoliday"
+                                                    ,"dishwasherWeekendHoliday"
+                                                     , "watercoolerWeekendHoliday"
+                                                     , "refrigeratorsWeekendHolida
+                                                    y"
+                                                     , "wirelessrouterWeekendHolida
+                                                    y"
+                                                     , "projectorWeekendHoliday"
+                                                    , "teleconferenceWeekendHolida
+                                                    y"
+                                                     , "serversWeekendHoliday"]]
+print(dfdailysum_weekendHoliday )
+
+dfdailysum_weekendHoliday.index = ["desktop"
+                               , "laptopy"
+                               , "personal printers"
+                              , "group printers"
+                              , "scanners"
+                               , "fax machines"
+                               , "mail machine"
+                              , "coffee machine"
+                              , "microwave"
+                              ,"dishwasher"
+                               , "water cooler"
+                               , "refrigerators"
+                              , "wireless router"
+                              , "projector"
+                              , "teleconference"
+                              , "servers"]
+
+dfdailysum_weekendHoliday = dfdailysum_weekendHoliday / 1000
+
+dfdailysum_weekendHoliday.plot(kind='barh', color='r', )
+plt.xlabel('Weekend/Holiday Energy Usage End Use Breakdown (kWh)')
+plt.gca().legend_ = None
+
+# schedule
+dfschedule = pd.read_excel(r"C:\\raw_data.xlsx", sheet_name="schedule")
+
+# compare schedule
+# Create plot for energy usage categorized by equipment types without servers
+fig, (ax1, ax2) = plt.subplots(2,1, figsize=(20,10))
+ax1.plot( dfdaily.Time, dfSUM.weekdayfaction, "k",
+           dfdaily.Time, dfschedule["WeekdayEquipmentSchedule"], "r"
+           )
+ax2.plot( dfdaily.Time, dfSUM.weekendfaction, "k",
+           dfdaily.Time, dfschedule["WeekendEquipmentSchedule"], "r",)
+
+ax2.legend(["Measured Daily Profile",
+             "DOE Reference Medium Office Building Model"], prop={'size': 20} , loc='lower center', ncol=6,bbox_to_anchor=(0.5,-0.5))
+
+ax2.set_xlabel('Time',size=20)
+
+
+ax1.set_ylabel('Weekday',size=20)
+ax2.set_ylabel('Weekend/Holiday ',size=20)
+
+for ax in fig.axes:
+     ax.set_xlim(xmin=0)
+     ax.tick_params(direction='in', length=7, width=4,labelsize=20)
+     ax.set_xticks(['00:00', '02:00' , '04:00',
+     '06:00', '08:00', '10:00',
+     '12:00', '14:00', '16:00',
+     '18:00', '20:00', '22:00', '24:00' ])
+     ax.set_xlim(xmin="00:00")
+     ax.set_xlim(xmax="24:00")
